@@ -63,6 +63,16 @@ uint16_t sign_extend(uint16_t x, int bit_count){
     return x;
 }
 
+void update_flags(uint16_t r){
+    if (reg[r] == 0){
+        reg[R_COND] = FL_ZRO;
+    } else if (reg[r] >> 15){ // 1 in left most bit, indicating negative
+        reg[R_COND] = FL_NEG;
+    } else {
+        reg[R_COND] = FL_POS;
+    }
+}
+
 int main(int argc, const char* argv[]){
     // loading args
     if (argc < 2){
@@ -97,7 +107,21 @@ while (running){
 
     switch (op) {
         case OP_ADD:
-            @{ADD}
+            // dest register dr
+            uint16_t r0 = (instr >> 9) & 0x7;
+            // first operand sr1
+            uint16_t r1 == (instr >> 5) & 0x1;
+
+            if (imm_flag){
+                uint16_t imm5 = sign_extend(instr & 0x1F, 5);
+                reg[r0] = reg[r1] + imm5;
+            } else {
+                uint16_t r2 = instr & 0x7;
+                reg[r0] = reg[r1] + reg[r2];
+            }
+
+            update_flags;
+
             break;
         case OP_AND:
             @{AND}
